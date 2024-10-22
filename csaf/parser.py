@@ -104,6 +104,8 @@ class CSAFParser:
     def _process_product(self):
         if len(self.data) == 0:
             return
+        if "product_tree" not in self.data:
+            return 
         product = self.data["product_tree"]
         for d in product["branches"]:
             element = {}
@@ -154,6 +156,8 @@ class CSAFParser:
         if len(self.data) == 0:
             return
         vuln_info = Vulnerability(validation="csaf")
+        if "vulnerabilities" not in self.data:
+            return 
         for vulnerability in self.data["vulnerabilities"]:
             vuln_info.initialise()
             if "cve" in vulnerability:
@@ -179,7 +183,7 @@ class CSAFParser:
                         vuln_info.set_value("product", products)
             if "ids" in vulnerability:
                 for id in vulnerability["ids"]:
-                    vuln_info.set_value("system_name", vulnerability["text"])
+                    vuln_info.set_value("system_name", id["text"])
             if "references" in vulnerability:
                 for reference in vulnerability["references"]:
                     vuln_info.set_value(reference["category"], [reference.get("summary",""), reference.get("url","")])
