@@ -195,6 +195,12 @@ class CSAFParser:
             if "product_status" in vulnerability:
                 for product_status in vulnerability["product_status"]:
                     vuln_info.set_value("status", product_status)
+                    if "known_affected" in vulnerability["product_status"]:
+                        affected_product_ids = []
+                        known_affected = vulnerability["product_status"].get("known_affected", [])
+                        for affected_product_id in known_affected:
+                            affected_product_ids.append(affected_product_id)
+                        vuln_info.set_value("affected_product_ids", affected_product_ids )
             if "remediations" in vulnerability:
                 remediations = []
                 for remediation in vulnerability["remediations"]:
