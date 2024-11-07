@@ -167,8 +167,13 @@ class CSAFParser:
             if "cwe" in vulnerability:
                 vuln_info.set_value("cwe",f"{vulnerability['cwe']['id']} - {vulnerability['cwe']['name']}")
             if "notes" in vulnerability:
+                notes = []
                 for note in vulnerability["notes"]:
-                    vuln_info.set_value("description", note["text"])
+                    note_ref = {'text' : note['text'], 'category': note['category']}
+                    if "title" in note:
+                        note_ref['title']=note["title"]
+                    notes.append(note_ref)
+                vuln_info.set_value("notes", notes)
             if "discovery_date" in vulnerability:
                 vuln_info.set_value("discovery_date", vulnerability["discovery_date"])
             if "flags" in vulnerability:
