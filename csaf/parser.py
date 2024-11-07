@@ -195,6 +195,54 @@ class CSAFParser:
             if "product_status" in vulnerability:
                 for product_status in vulnerability["product_status"]:
                     vuln_info.set_value("status", product_status)
+                    if "known_affected" in vulnerability["product_status"]:
+                        known_affected_product_ids = []
+                        known_affected = vulnerability["product_status"].get("known_affected", [])
+                        for known_affected_product_id in known_affected:
+                            known_affected_product_ids.append(known_affected_product_id)
+                        vuln_info.set_value("known_affected_product_ids", known_affected_product_ids)
+                    if "first_affected" in vulnerability["product_status"]:
+                        first_affected_product_ids = []
+                        first_affected = vulnerability["product_status"].get("first_affected", [])
+                        for first_affected_product_id in first_affected:
+                            first_affected_product_ids.append(first_affected_product_id)
+                        vuln_info.set_value("first_affected_product_ids", first_affected_product_ids)
+                    if "first_fixed" in vulnerability["product_status"]:
+                        first_fixed_product_ids = []
+                        first_fixed = vulnerability["product_status"].get("first_fixed", [])
+                        for first_fixed_product_id in first_fixed:
+                            first_fixed_product_ids.append(first_fixed_product_id)
+                        vuln_info.set_value("first_fixed_product_ids", first_fixed_product_ids)
+                    if "fixed" in vulnerability["product_status"]:
+                        fixed_product_ids = []
+                        fixed = vulnerability["product_status"].get("fixed", [])
+                        for fixed_product_id in fixed:
+                            fixed_product_ids.append(fixed_product_id)
+                        vuln_info.set_value("fixed_product_ids", fixed_product_ids)
+                    if "known_not_affected" in vulnerability["product_status"]:
+                        known_not_affected_product_ids = []
+                        known_not_affected = vulnerability["product_status"].get("known_not_affected", [])
+                        for known_not_affected_product_id in known_not_affected:
+                            known_not_affected_product_ids.append(known_not_affected_product_id)
+                        vuln_info.set_value("known_not_affected_product_ids", known_not_affected_product_ids)
+                    if "last_affected" in vulnerability["product_status"]:
+                        last_affected_product_ids = []
+                        last_affected = vulnerability["product_status"].get("last_affected", [])
+                        for last_affected_product_id in last_affected:
+                            last_affected_product_ids.append(last_affected_product_id)
+                        vuln_info.set_value("last_affected_product_ids", last_affected_product_ids)
+                    if "recommended" in vulnerability["product_status"]:
+                        recommended_product_ids = []
+                        recommended = vulnerability["product_status"].get("recommended", [])
+                        for recommended_product_id in recommended:
+                            recommended_product_ids.append(recommended_product_id)
+                        vuln_info.set_value("recommended_product_ids", recommended_product_ids)
+                    if "under_investigation" in vulnerability["product_status"]:
+                        under_investigation_product_ids = []
+                        under_investigation = vulnerability["product_status"].get("under_investigation", [])
+                        for under_investigation_product_id in under_investigation:
+                            under_investigation_product_ids.append(under_investigation_product_id)
+                        vuln_info.set_value("under_investigation_product_ids", under_investigation_product_ids)
             if "remediations" in vulnerability:
                 remediations = []
                 for remediation in vulnerability["remediations"]:
