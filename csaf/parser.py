@@ -253,7 +253,20 @@ class CSAFParser:
             if "remediations" in vulnerability:
                 remediations = []
                 for remediation in vulnerability["remediations"]:
-                    remediations.append(remediation["details"])
+                    remediation_ref = {'text': remediation['details'], 'category': remediation['category']}
+                    if "date" in remediation:
+                        remediation_ref['date'] = remediation['date']
+                    if "entitlements" in remediation:
+                        remediation_ref['entitlements'] = remediation['entitlements']
+                    if "group_ids" in remediation:
+                        remediation_ref['group_ids'] = remediation['group_ids']
+                    if "product_id" in remediation:
+                        remediation_ref['product_ids'] = remediation['product_ids']
+                    if "restart_required" in remediation:
+                        remediation_ref['restart_required'] = remediation['restart_required']
+                    if "url" in remediation:
+                        remediation_ref['url'] = remediation['url']
+                    remediations.append(remediation_ref)
                 vuln_info.set_value("remediations", remediations)
             self.vulnerabilities.append(vuln_info.get_vulnerability())
 
