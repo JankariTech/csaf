@@ -198,8 +198,9 @@ class CSAFParser:
                 for threat in vulnerability["threats"]:
                     vuln_info.set_value(threat["category"], threat["details"])
             if "product_status" in vulnerability:
+                status = []
                 for product_status in vulnerability["product_status"]:
-                    vuln_info.set_value("status", product_status)
+                    status.append(product_status)
                     if "known_affected" in vulnerability["product_status"]:
                         known_affected_product_ids = []
                         known_affected = vulnerability["product_status"].get("known_affected", [])
@@ -248,6 +249,7 @@ class CSAFParser:
                         for under_investigation_product_id in under_investigation:
                             under_investigation_product_ids.append(under_investigation_product_id)
                         vuln_info.set_value("under_investigation_product_ids", under_investigation_product_ids)
+                vuln_info.set_value("status", status)
             if "remediations" in vulnerability:
                 remediations = []
                 for remediation in vulnerability["remediations"]:
