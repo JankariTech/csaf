@@ -260,7 +260,7 @@ class CSAFParser:
                         remediation_ref['entitlements'] = remediation['entitlements']
                     if "group_ids" in remediation:
                         remediation_ref['group_ids'] = remediation['group_ids']
-                    if "product_id" in remediation:
+                    if "product_ids" in remediation:
                         remediation_ref['product_ids'] = remediation['product_ids']
                     if "restart_required" in remediation:
                         remediation_ref['restart_required'] = remediation['restart_required']
