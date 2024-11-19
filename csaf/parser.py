@@ -130,9 +130,12 @@ class CSAFParser:
                         if "cpe" in pid:
                             cpe_info = pid["cpe"]
                             cpe_items = cpe_info.split(":")
-                            if cpe_items[1] == "/a":
+                            # (cpe_items[1]) can have three value as /a,/h and /o
+                            if cpe_items[1] in ["/a", "/o", "/h"]:
                                 # Example is cpe:/a:redhat:rhel_eus:8.2::realtime
-                                element["product_version"] = cpe_items[4]
+                                # some csaf will not have product version in cpe
+                                # although this is not recommended by csaf 
+                                element["product_version"] = cpe_items[4] if len(cpe_items) > 4 else None
                             elif cpe_items[1] == "2.3":
                                 # Example is cpe:2.3:a:redhat:rhel_eus:8.2::realtime
                                 element["product_version"] = cpe_items[5]
