@@ -110,6 +110,21 @@ class CSAFParser:
         for d in product["branches"]:
             element = {}
             self._process_branch(d, element)
+        if "relationships" in product:
+            self._process_product_relationships(product["relationships"])
+    
+    def _process_product_relationships(self, relationships):
+        product_relationships = []
+        product_relationship = {}
+        for relationship in relationships:
+            product_relationship["category"] = relationship.get("category", None)
+            if "full_product_name" in relationship:
+                product_relationship["product_id"] = relationship["full_product_name"].get("product_id", None)
+                product_relationship["name"] = relationship["full_product_name"].get("name", None)
+            product_relationship["product_reference"] = relationship.get("product_reference", None)
+            product_relationship["relates_to_product_reference"] = relationship.get("relates_to_product_reference", None)
+            product_relationships.append(product_relationship)
+        self.product["product_relationships"] = product_relationships
 
     def _process_branch_element(self, branch_element, element):
         category = branch_element.get("category", None)
