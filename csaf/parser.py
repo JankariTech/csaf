@@ -115,8 +115,8 @@ class CSAFParser:
     
     def _process_product_relationships(self, relationships):
         product_relationships = []
-        product_relationship = {}
         for relationship in relationships:
+            product_relationship = {}
             product_relationship["category"] = relationship.get("category", None)
             if "full_product_name" in relationship:
                 product_relationship["product_id"] = relationship["full_product_name"].get("product_id", None)
@@ -124,7 +124,24 @@ class CSAFParser:
             product_relationship["product_reference"] = relationship.get("product_reference", None)
             product_relationship["relates_to_product_reference"] = relationship.get("relates_to_product_reference", None)
             product_relationships.append(product_relationship)
-        self.product["product_relationships"] = product_relationships
+        self._process_product_relationships_into_product_id(product_relationships)
+
+    def _process_product_relationships_into_product_id(self, product_relationships):
+        for relationship in product_relationships:
+            related_products = {}
+            id = relationship["product_id"]
+            product_reference = relationship["product_reference"]
+            relates_to_product_reference = relationship["relates_to_product_reference"]
+            if product_reference in self.product:
+                product_details = self.product.get(product_reference, {})
+                related_products["vendor"] = product_details.get("vendor", None)
+                related_products["version"] = product_details.get("version", None)
+            if relates_to_product_reference in self.product:
+                product_details = self.product.get(relates_to_product_reference, {})
+                related_products["product"] = product_details.get("product", None)
+                related_products["family"] = product_details.get("family", None)
+            if id is not None and id not in self.product:
+                self.product[id] = related_products
 
     def _process_branch_element(self, branch_element, element):
         category = branch_element.get("category", None)
