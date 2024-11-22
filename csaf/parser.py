@@ -110,6 +110,38 @@ class CSAFParser:
         for d in product["branches"]:
             element = {}
             self._process_branch(d, element)
+        if "relationships" in product:
+            self._process_product_relationships(product["relationships"])
+    
+    def _process_product_relationships(self, relationships):
+        product_relationships = []
+        for relationship in relationships:
+            product_relationship = {}
+            product_relationship["category"] = relationship.get("category", None)
+            if "full_product_name" in relationship:
+                product_relationship["product_id"] = relationship["full_product_name"].get("product_id", None)
+                product_relationship["name"] = relationship["full_product_name"].get("name", None)
+            product_relationship["product_reference"] = relationship.get("product_reference", None)
+            product_relationship["relates_to_product_reference"] = relationship.get("relates_to_product_reference", None)
+            product_relationships.append(product_relationship)
+        self._process_product_relationships_into_product_id(product_relationships)
+
+    def _process_product_relationships_into_product_id(self, product_relationships):
+        for relationship in product_relationships:
+            related_products = {}
+            id = relationship["product_id"]
+            product_reference = relationship["product_reference"]
+            relates_to_product_reference = relationship["relates_to_product_reference"]
+            if product_reference in self.product:
+                product_details = self.product.get(product_reference, {})
+                related_products["vendor"] = product_details.get("vendor", None)
+                related_products["version"] = product_details.get("version", None)
+            if relates_to_product_reference in self.product:
+                product_details = self.product.get(relates_to_product_reference, {})
+                related_products["product"] = product_details.get("product", None)
+                related_products["family"] = product_details.get("family", None)
+            if id is not None and id not in self.product:
+                self.product[id] = related_products
 
     def _process_branch_element(self, branch_element, element):
         category = branch_element.get("category", None)
@@ -128,6 +160,7 @@ class CSAFParser:
                     if "product_identification_helper" in branch["product"]:
                         pid = branch["product"]["product_identification_helper"]
                         if "cpe" in pid:
+                            # cpe format is: cpe:/<part>:<vendor>:<product>:<version>:<update>:<edition>:<language>
                             cpe_info = pid["cpe"]
                             cpe_items = cpe_info.split(":")
                             # (cpe_items[1]) can have three value as /a,/h and /o
@@ -140,6 +173,9 @@ class CSAFParser:
                                 # Example is cpe:2.3:a:redhat:rhel_eus:8.2::realtime
                                 element["product_version"] = cpe_items[5]
                         elif "purl" in pid:
+                            # PURL format is: pkg:<type>/<namespace>/<name>@<version>?<qualifiers>
+                            # e.g. if "purl": "pkg:rpm/redhat/ruby@1.8.7.352-4.el6_2?arch=i686"
+                            # version = 1.8.7.352-4.el6_2
                             purl_info = PackageURL.from_string(pid["purl"])
                             element["product_version"] = purl_info.to_dict()["version"]
                     item = {}
