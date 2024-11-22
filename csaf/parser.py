@@ -160,6 +160,7 @@ class CSAFParser:
                     if "product_identification_helper" in branch["product"]:
                         pid = branch["product"]["product_identification_helper"]
                         if "cpe" in pid:
+                            # cpe format is: cpe:/<part>:<vendor>:<product>:<version>:<update>:<edition>:<language>
                             cpe_info = pid["cpe"]
                             cpe_items = cpe_info.split(":")
                             # (cpe_items[1]) can have three value as /a,/h and /o
@@ -172,6 +173,9 @@ class CSAFParser:
                                 # Example is cpe:2.3:a:redhat:rhel_eus:8.2::realtime
                                 element["product_version"] = cpe_items[5]
                         elif "purl" in pid:
+                            # PURL format is: pkg:<type>/<namespace>/<name>@<version>?<qualifiers>
+                            # e.g. if "purl": "pkg:rpm/redhat/ruby@1.8.7.352-4.el6_2?arch=i686"
+                            # version = 1.8.7.352-4.el6_2
                             purl_info = PackageURL.from_string(pid["purl"])
                             element["product_version"] = purl_info.to_dict()["version"]
                     item = {}
